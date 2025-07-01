@@ -13,3 +13,66 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  userId      String @id
+  userName    String
+  userEmail   String @unique
+  userProfile Bytes
+
+  groceriesCreated Grocery[] @relation("CreatedGroceries")
+  groceriesUpdated Grocery[] @relation("UpdatedGroceries")
+
+  ownedLists GroceryList[] @relation("ListOwners")
+
+  requestsMade     Request[] @relation("RequestsMade")
+  requestsReceived Request[] @relation("RequestsReceived")
+}
+
+model Grocery {
+  itemId       String   @id
+  itemName     String
+  categoryName String
+  note         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdById  String
+  updatedById  String
+
+  groceryLists GroceryList[]
+
+  createdBy User @relation("CreatedGroceries", fields: [createdById], references: [userId])
+  updatedBy User @relation("UpdatedGroceries", fields: [updatedById], references: [userId])
+}
+
+model GroceryList {
+  listId   String @id
+  listName String
+  order    Int
+
+  owners User[]    @relation("ListOwners")
+  items  Grocery[]
+
+  Request Request[]
+}
+
+model Request {
+  requestId String   @id
+  createdAt DateTime @default(now())
+  message   String?
+  status    Status   @default(Pending)
+
+  requestById   String
+  requestedToId String
+  requestListId String
+
+  requestBy   User        @relation("RequestsMade", fields: [requestById], references: [userId])
+  requestedTo User        @relation("RequestsReceived", fields: [requestedToId], references: [userId])
+  requestList GroceryList @relation(fields: [requestListId], references: [listId])
+}
+
+enum Status {
+  Pending
+  Rejected
+  Accepted
+}

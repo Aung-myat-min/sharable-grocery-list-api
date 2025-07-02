@@ -46,9 +46,10 @@ model Grocery {
 }
 
 model GroceryList {
-  listId   String @id
-  listName String
-  order    Int
+  listId    String  @id
+  listName  String
+  order     Int
+  isDeleted Boolean @default(false)
 
   owners User[]    @relation("ListOwners")
   items  Grocery[]

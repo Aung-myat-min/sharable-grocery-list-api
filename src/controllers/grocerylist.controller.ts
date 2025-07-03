@@ -5,7 +5,7 @@ import { ErrorMessageAssign } from "@/utils/error.assign";
 const prisma = new PrismaClient();
 
 // Create new Grocery List
-export async function CreateUser(
+export async function CreateGroceryList(
   newGroceryList: GroceryList
 ): Promise<ResponseModel<GroceryList>> {
   let response = ResponseModel.empty<GroceryList>();

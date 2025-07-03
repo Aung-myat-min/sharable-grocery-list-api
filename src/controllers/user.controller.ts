@@ -21,6 +21,34 @@ export async function CreateUser(newUser: User): Promise<ResponseModel<User>> {
   return response;
 }
 
+// Get User (This func will properly be only used on sign up process)
+export async function GetUser(userId: string): Promise<ResponseModel<User>> {
+  let response = ResponseModel.empty<User>();
+
+  try {
+    const nUser = await prisma.user.findUnique({ where: { userId: userId } });
+
+    if (nUser) {
+      response = ResponseModel.success<User>(nUser, "User Found!");
+    } else {
+      response = ResponseModel.notFound<User>("User Not Found!");
+    }
+  } catch (error) {
+    console.error(`Error Creating User: ${error}`);
+    response = ErrorMessageAssign(response, error);
+  }
+
+  return response;
+}
+
+/*
+  I personally divied the update functions into three functions. And here is why:
+
+  1. UpdateUser - for anything unimportant
+  2. UpdateUserEmail - for just updating user email
+  3. UpdateUserProfile - for just updating user profile (to make the function as fast as possible)
+*/
+
 // Update User
 export async function UpdateUser(
   userId: string,

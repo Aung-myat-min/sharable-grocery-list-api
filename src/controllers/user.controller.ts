@@ -1,0 +1,103 @@
+import { User } from "@/app/generated/prisma";
+import { ErrorMessageAssign } from "@/utils/error.assign";
+import { ResponseModel } from "@/utils/response.model";
+import { PrismaClient } from "@/app/generated/prisma/index";
+
+const prisma = new PrismaClient();
+
+// Create User (This func will properly be only used on sign up process)
+export async function CreateUser(newUser: User): Promise<ResponseModel<User>> {
+  let response = ResponseModel.empty<User>();
+
+  try {
+    const nUser = await prisma.user.create({ data: newUser });
+
+    response = ResponseModel.success<User>(nUser, "New User Created!");
+  } catch (error) {
+    console.error(`Error Creating User: ${error}`);
+    response = ErrorMessageAssign(response, error);
+  }
+
+  return response;
+}
+
+// Update User
+export async function UpdateUser(
+  userId: string,
+  userName: string
+): Promise<ResponseModel<User>> {
+  let response = ResponseModel.empty<User>();
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { userId: userId },
+      data: {
+        userName: userName,
+      },
+    });
+
+    response = ResponseModel.success<User>(
+      updatedUser,
+      "User has been updated!"
+    );
+  } catch (error) {
+    console.error(`Error Creating User: ${error}`);
+    response = ErrorMessageAssign(response, error);
+  }
+
+  return response;
+}
+
+// Update User Email
+export async function UpdateUserEmail(
+  userId: string,
+  userEmail: string
+): Promise<ResponseModel<User>> {
+  let response = ResponseModel.empty<User>();
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { userId: userId },
+      data: {
+        userEmail: userEmail,
+      },
+    });
+
+    response = ResponseModel.success<User>(
+      updatedUser,
+      "User has been updated!"
+    );
+  } catch (error) {
+    console.error(`Error Creating User: ${error}`);
+    response = ErrorMessageAssign(response, error);
+  }
+
+  return response;
+}
+
+// Update User Profile
+export async function UpdateUserProfile(
+  userId: string,
+  userProfile: Uint8Array<ArrayBufferLike>
+): Promise<ResponseModel<User>> {
+  let response = ResponseModel.empty<User>();
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { userId: userId },
+      data: {
+        userProfile: userProfile,
+      },
+    });
+
+    response = ResponseModel.success<User>(
+      updatedUser,
+      "User has been updated!"
+    );
+  } catch (error) {
+    console.error(`Error Creating User: ${error}`);
+    response = ErrorMessageAssign(response, error);
+  }
+
+  return response;
+}

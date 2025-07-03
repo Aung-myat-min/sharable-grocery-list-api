@@ -41,6 +41,28 @@ export async function GetUser(userId: string): Promise<ResponseModel<User>> {
   return response;
 }
 
+// Check Email is already used or not
+export async function CheckEmail(
+  userEmail: string
+): Promise<ResponseModel<boolean>> {
+  let response = ResponseModel.empty<boolean>();
+
+  try {
+    const nUser = await prisma.user.findUnique({ where: { userEmail } });
+
+    if (nUser) {
+      response = ResponseModel.success<boolean>(true, "Email Already In Use!");
+    } else {
+      response = ResponseModel.notFound<boolean>("Email is new!");
+    }
+  } catch (error) {
+    console.error(`Error Creating User: ${error}`);
+    response = ErrorMessageAssign(response, error);
+  }
+
+  return response;
+}
+
 /*
   I personally divied the update functions into three functions. And here is why:
 
@@ -69,7 +91,7 @@ export async function UpdateUser(
       "User has been updated!"
     );
   } catch (error) {
-    console.error(`Error Creating User: ${error}`);
+    console.error(`Error Updating User: ${error}`);
     response = ErrorMessageAssign(response, error);
   }
 
@@ -96,7 +118,7 @@ export async function UpdateUserEmail(
       "User has been updated!"
     );
   } catch (error) {
-    console.error(`Error Creating User: ${error}`);
+    console.error(`Error Updating User Email: ${error}`);
     response = ErrorMessageAssign(response, error);
   }
 
@@ -123,7 +145,7 @@ export async function UpdateUserProfile(
       "User has been updated!"
     );
   } catch (error) {
-    console.error(`Error Creating User: ${error}`);
+    console.error(`Error Updating User Profile: ${error}`);
     response = ErrorMessageAssign(response, error);
   }
 

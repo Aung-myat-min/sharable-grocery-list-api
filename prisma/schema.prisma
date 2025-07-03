@@ -38,6 +38,8 @@ model Grocery {
   updatedAt    DateTime @updatedAt
   createdById  String
   updatedById  String
+  priority     Int
+  bought       Boolean  @default(false)
 
   groceryLists GroceryList[]
 

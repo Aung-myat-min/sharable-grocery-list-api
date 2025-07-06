@@ -13,6 +13,10 @@ export class ResponseModel<T> {
     return new ResponseModel(OperationStatus.Success, message, data);
   }
 
+  static invalid<T>(data?: T, message = "Invalid"): ResponseModel<T> {
+    return new ResponseModel(OperationStatus.Invalid, message, data);
+  }
+
   static fail<T>(message = "Failed", data?: T): ResponseModel<T> {
     return new ResponseModel(OperationStatus.Fail, message, data);
   }
@@ -33,6 +37,7 @@ export class ResponseModel<T> {
 export enum OperationStatus {
   NotSpecified = "NotSpecified",
   Success = "Success",
+  Invalid = "Invalid",
   NotFound = "NotFound",
   Fail = "Fail",
   ServerError = "ServerError",

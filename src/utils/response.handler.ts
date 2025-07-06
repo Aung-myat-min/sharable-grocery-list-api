@@ -1,25 +1,16 @@
-import { NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import { ResponseModel, OperationStatus } from "./response.model";
 
-export function ResponseModelHandler<T>(res: NextApiResponse, model: ResponseModel<T>) {
-  let statusCode: number;
+export function ResponseModelHandler<T>(model: ResponseModel<T>) {
+  const statusMap: Record<OperationStatus, number> = {
+    [OperationStatus.Success]: 200,
+    [OperationStatus.NotFound]: 404,
+    [OperationStatus.Invalid]: 401,
+    [OperationStatus.Fail]: 400,
+    [OperationStatus.ServerError]: 500,
+    [OperationStatus.NotSpecified]: 520,
+  };
 
-  switch (model.status) {
-    case OperationStatus.Success:
-      statusCode = 200;
-      break;
-    case OperationStatus.NotFound:
-      statusCode = 404;
-      break;
-    case OperationStatus.Fail:
-      statusCode = 400;
-      break;
-    case OperationStatus.ServerError:
-      statusCode = 500;
-      break;
-    default:
-      statusCode = 520; // NotSpecified
-  }
-
-  return res.status(statusCode).json(model);
+  const statusCode = statusMap[model.status] ?? 520;
+  return NextResponse.json(model, { status: statusCode });
 }

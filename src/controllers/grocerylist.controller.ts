@@ -6,13 +6,14 @@ const prisma = new PrismaClient();
 
 // Create new Grocery List
 export async function CreateGroceryList(
-  newGroceryList: GroceryList
+  newGroceryList: GroceryList,
+  userId: string
 ): Promise<ResponseModel<GroceryList>> {
   let response = ResponseModel.empty<GroceryList>();
 
   try {
     const nGroceryList = await prisma.groceryList.create({
-      data: newGroceryList,
+      data: { ...newGroceryList, owners: { connect: { userId } } },
     });
 
     response = ResponseModel.success<GroceryList>(

@@ -1,16 +1,22 @@
 import { CreateRequest } from "@/controllers/request.controller";
 import { ResponseModelHandler } from "@/utils/response.handler";
+import { ResponseModel } from "@/utils/response.model";
 
 export async function PATCH(req: Request) {
-  const { requestEmail, receiveEmail, requestListId, message } =
-    await req.json();
+  const body = await req.json();
+  const { requestEmail, receiveEmail, requestListId, message } = body;
 
-  const status = await CreateRequest(
-    requestEmail,
-    receiveEmail,
-    requestListId,
-    message
-  );
+  let status;
+  if (!requestEmail || !receiveEmail || !requestListId) {
+    status = ResponseModel.invalid(null, "Missing required fields.");
+  } else {
+    status = await CreateRequest(
+      requestEmail,
+      receiveEmail,
+      requestListId,
+      message
+    );
+  }
 
   return ResponseModelHandler(status);
 }
